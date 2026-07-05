@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+dist/
+build/
+
+# Environment — NEVER commit these
+.env
+.env.local
+.env.*.local
+backend/.env
+frontend/.env
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+mysql_data/
+
+# Build
+*.tsbuildinfo
+
+# Test files
+test_*.js

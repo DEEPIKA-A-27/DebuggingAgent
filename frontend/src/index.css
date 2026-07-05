@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors duration-200;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2.5 px-5 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium py-2.5 px-5 rounded-lg transition-colors duration-200;
+  }
+
+  .btn-danger {
+    @apply bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all duration-200;
+  }
+
+  .card {
+    @apply bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6;
+  }
+}
+
+/* Monaco editor dark mode fix */
+.dark .monaco-editor {
+  border-radius: 0.5rem;
+}
+
+/* ── AI Chat panel ────────────────────────────────────────── */
+
+/* Thin custom scrollbar inside the message list */
+.chat-messages::-webkit-scrollbar        { width: 4px; }
+.chat-messages::-webkit-scrollbar-track  { background: transparent; }
+.chat-messages::-webkit-scrollbar-thumb  { @apply bg-gray-300 dark:bg-gray-600 rounded-full; }
+
+/* Hide scrollbar on quick-prompt strip */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Gradient shimmer on AI avatar */
+.ai-avatar {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #2563eb 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 4s ease infinite;
+}
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%;   }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%;   }
+}
+
+/* Glassmorphism chat header */
+.chat-header-glass {
+  background: linear-gradient(135deg, rgba(37,99,235,0.92) 0%, rgba(109,40,217,0.92) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Code block copy button fade-in */
+.code-block-wrapper:hover .copy-btn { opacity: 1; }
+.copy-btn { opacity: 0; transition: opacity 0.2s; }
+
+/* User message gradient */
+.user-bubble {
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+}
+
+/* Textarea auto-grow feel */
+.chat-input {
+  field-sizing: content;
+  min-height: 44px;
+  max-height: 140px;
+}
