@@ -1,276 +1,172 @@
-# AI Debugging Agent
+# 🐛 AI Debugging Agent
 
-A production-ready AI-powered web application for automated code debugging, error detection, code correction, optimization, and test case generation using Google Gemini LLM.
+An AI-powered full-stack web application for automated code debugging, analysis, optimization, and learning — powered by **Groq LLM (Llama 3.3 70B)**.
 
-## Project Overview
+---
 
-The AI Debugging Agent helps developers debug programs written in **Java**, **Python**, **C++**, and **JavaScript**. It automatically detects syntax and logical errors, explains them in beginner-friendly language, generates corrected and optimized code, creates test cases, estimates algorithm complexity, and recommends learning topics.
+## ✨ Features
 
-## Features
+- **AI Code Analysis** — syntax errors, logical errors, bug detection
+- **AI Chat Assistant** — 7 modes: Chat, Explain, Test Cases, Optimize, Complexity, Bug Predict, Interview
+- **10 Programming Languages** — Java, Python, C++, JavaScript, C#, TypeScript, Go, Rust, Swift, Kotlin
+- **10 UI Languages** — English, Tamil, Hindi, French, Spanish, German, Chinese, Arabic, Portuguese, Japanese
+- **Code Translation** — convert between any 2 languages
+- **Flowchart Generator** — visual flowchart from code
+- **Debug History** — searchable, filterable analysis history
+- **PDF Reports** — download full analysis as PDF
+- **Dashboard** — stats, charts, recent activity
+- **Dark / Light Theme**
+- **User Settings** — theme, font size, autosave
 
-- **Multi-Language Support** — Java, Python, C++, JavaScript
-- **AI-Powered Error Detection** — Syntax and logical error identification
-- **Beginner-Friendly Explanations** — Clear error descriptions
-- **Code Correction & Optimization** — AI-generated fixes with explanations
-- **Test Case Generation** — Normal, boundary, and edge test cases
-- **Complexity Analysis** — Time and space complexity estimation
-- **Learning Recommendations** — Personalized topic suggestions
-- **Debug History** — Searchable analysis history stored in MySQL
-- **PDF Reports** — Downloadable analysis reports
-- **JWT Authentication** — Secure user registration and login
-- **Dark/Light Mode** — Professional responsive UI
-- **Docker Deployment** — One-command deployment with Docker Compose
+---
 
-## Technology Stack
+## 🛠 Tech Stack
 
-| Layer | Technologies |
-|-------|-------------|
-| Frontend | React.js, Tailwind CSS, React Router, Axios, Monaco Editor |
+| Layer | Technology |
+|---|---|
+| Frontend | React 18, Vite, Tailwind CSS, Monaco Editor |
 | Backend | Node.js, Express.js |
-| Database | MySQL |
-| Authentication | JWT, bcrypt |
-| AI | Google Gemini LLM |
-| Deployment | Docker, Docker Compose |
+| Database | MySQL 8.0 |
+| AI | Groq API (Llama 3.3 70B) |
+| Auth | JWT |
 
-## Folder Structure
+---
+
+## 🚀 Deployment Guide
+
+### Architecture
+```
+Frontend (React)  →  Vercel
+Backend (Node.js) →  Render
+Database (MySQL)  →  PlanetScale (free) or Railway
+```
+
+---
+
+### Step 1 — Set up MySQL Database (PlanetScale — free)
+
+1. Go to **https://planetscale.com** → sign up free
+2. Create a database → name it `debugging_agent`
+3. Get the connection string — note host, user, password
+4. Run the SQL schema:
+   - Copy contents of `database/init.sql`
+   - Run in PlanetScale console
+   - Run `database/migrate.sql`
+   - Run `database/add_user_fields.sql`
+
+---
+
+### Step 2 — Deploy Backend to Render (free)
+
+1. Go to **https://render.com** → sign up with GitHub
+2. **New** → **Web Service** → connect your `DebuggingAgent` repo
+3. Settings:
+   - **Root Directory:** `backend`
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start`
+   - **Instance Type:** Free
+4. Add **Environment Variables**:
+
+| Key | Value |
+|---|---|
+| `NODE_ENV` | `production` |
+| `PORT` | `10000` |
+| `DB_HOST` | your PlanetScale host |
+| `DB_PORT` | `3306` |
+| `DB_USER` | your DB user |
+| `DB_PASSWORD` | your DB password |
+| `DB_NAME` | `debugging_agent` |
+| `JWT_SECRET` | any random 32+ char string |
+| `JWT_EXPIRES_IN` | `7d` |
+| `GROQ_API_KEY` | your Groq key from console.groq.com |
+| `FRONTEND_URL` | your Vercel URL (add after Step 3) |
+
+5. Click **Deploy** → copy the URL e.g. `https://debugging-agent-backend.onrender.com`
+
+---
+
+### Step 3 — Deploy Frontend to Vercel (free)
+
+1. Go to **https://vercel.com** → sign up with GitHub
+2. **New Project** → import `DebuggingAgent` repo
+3. Settings:
+   - **Root Directory:** `frontend`
+   - **Framework:** Vite
+   - **Build Command:** `npm run build`
+   - **Output Directory:** `dist`
+4. Add **Environment Variable**:
+
+| Key | Value |
+|---|---|
+| `VITE_API_URL` | `https://debugging-agent-backend.onrender.com/api` |
+
+5. Click **Deploy** → copy the URL e.g. `https://debugging-agent.vercel.app`
+
+---
+
+### Step 4 — Update Backend CORS
+
+Go back to **Render** → your backend service → **Environment** → update:
+
+```
+FRONTEND_URL=https://debugging-agent.vercel.app
+```
+
+Click **Save** — backend redeploys automatically.
+
+---
+
+## 💻 Local Development
+
+```bash
+# 1. Clone
+git clone https://github.com/DEEPIKA-A-27/DebuggingAgent.git
+cd DebuggingAgent
+
+# 2. Backend
+cd backend
+cp .env.example .env        # fill in your values
+npm install
+npm run dev                 # runs on http://localhost:5000
+
+# 3. Frontend (new terminal)
+cd frontend
+cp .env.example .env        # set VITE_API_URL=http://localhost:5000/api
+npm install
+npm run dev                 # runs on http://localhost:5173
+```
+
+---
+
+## 🔑 Required API Keys
+
+| Service | Where to get | Free tier |
+|---|---|---|
+| **Groq API** | https://console.groq.com/keys | 14,400 req/day |
+| **MySQL** | PlanetScale / Railway / local | Free tier available |
+
+---
+
+## 📁 Project Structure
 
 ```
 DebuggingAgent/
-├── backend/
+├── backend/          # Node.js + Express API
 │   ├── src/
-│   │   ├── config/          # Database & Gemini configuration
-│   │   ├── controllers/     # Request handlers
-│   │   ├── middleware/      # Auth, validation, error handling
-│   │   ├── models/          # Database models
-│   │   ├── routes/          # API route definitions
-│   │   ├── services/        # Business logic & AI agent
-│   │   ├── utils/           # Prompt builder, PDF generator
-│   │   ├── app.js           # Express app setup
-│   │   └── server.js        # Server entry point
-│   ├── Dockerfile
+│   │   ├── config/   # DB + AI config
+│   │   ├── controllers/
+│   │   ├── middleware/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   └── utils/
 │   └── package.json
-├── frontend/
+├── frontend/         # React + Vite
 │   ├── src/
-│   │   ├── components/      # Reusable UI components
-│   │   ├── context/         # Auth & theme context
-│   │   ├── pages/           # Application pages
-│   │   ├── services/        # API service layer
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   ├── Dockerfile
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── pages/
+│   │   └── services/
 │   └── package.json
-├── database/
-│   └── init.sql             # MySQL schema
-├── docker-compose.yml
-└── README.md
+└── database/         # SQL schema files
 ```
-
-## Installation
-
-### Prerequisites
-
-- Node.js 18+
-- MySQL 8.0+
-- Google Gemini API Key ([Get one here](https://aistudio.google.com/app/apikey))
-
-### Clone the Repository
-
-```bash
-git clone <repository-url>
-cd DebuggingAgent
-```
-
-## Environment Variables
-
-### Backend (`backend/.env`)
-
-```env
-PORT=5000
-NODE_ENV=development
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=your_password
-DB_NAME=debugging_agent
-JWT_SECRET=your_super_secret_jwt_key
-JWT_EXPIRES_IN=7d
-GEMINI_API_KEY=your_gemini_api_key
-FRONTEND_URL=http://localhost:5173
-```
-
-### Frontend (`frontend/.env`)
-
-```env
-VITE_API_URL=http://localhost:5000/api
-```
-
-## MySQL Setup
-
-1. Start MySQL server
-2. Run the initialization script:
-
-```bash
-mysql -u root -p < database/init.sql
-```
-
-Or the schema will auto-initialize when using Docker Compose.
-
-## Gemini API Configuration
-
-1. Visit [Google AI Studio](https://aistudio.google.com/app/apikey)
-2. Create an API key
-3. Set `GEMINI_API_KEY` in your backend `.env` file
-
-## Running Locally
-
-### Backend
-
-```bash
-cd backend
-npm install
-cp .env.example .env
-# Edit .env with your credentials
-npm run dev
-```
-
-### Frontend
-
-```bash
-cd frontend
-npm install
-cp .env.example .env
-npm run dev
-```
-
-Open [http://localhost:5173](http://localhost:5173)
-
-## Docker Deployment
-
-1. Create a `.env` file in the project root:
-
-```env
-DB_PASSWORD=rootpassword
-DB_NAME=debugging_agent
-JWT_SECRET=your_production_jwt_secret
-GEMINI_API_KEY=your_gemini_api_key
-```
-
-2. Start all services:
-
-```bash
-docker compose up --build
-```
-
-3. Access the application at [http://localhost](http://localhost)
-
-## API Documentation
-
-### Authentication
-
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| POST | `/api/auth/register` | Register new user | No |
-| POST | `/api/auth/login` | Login user | No |
-| GET | `/api/auth/profile` | Get user profile | Yes |
-
-**Register Body:**
-```json
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "password123",
-  "confirmPassword": "password123"
-}
-```
-
-**Login Body:**
-```json
-{
-  "email": "john@example.com",
-  "password": "password123"
-}
-```
-
-### Debug Analysis
-
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| GET | `/api/debug/languages` | Get supported languages | No |
-| POST | `/api/debug/analyze` | Run AI analysis | Yes |
-| POST | `/api/debug/pdf` | Generate PDF report | Yes |
-
-**Analyze Body:**
-```json
-{
-  "code": "def add(a, b):\n    return a + b",
-  "language": "Python",
-  "saveHistory": true
-}
-```
-
-**Analyze Response:**
-```json
-{
-  "success": true,
-  "data": {
-    "historyId": 1,
-    "originalCode": "...",
-    "language": "Python",
-    "syntaxErrors": [],
-    "logicalErrors": [],
-    "correctedCode": "...",
-    "optimizedCode": "...",
-    "optimizationExplanation": "...",
-    "testCases": [],
-    "boundaryTestCases": [],
-    "edgeTestCases": [],
-    "expectedOutputs": [],
-    "bestPractices": [],
-    "timeComplexity": "O(1)",
-    "spaceComplexity": "O(1)",
-    "learningTopics": []
-  }
-}
-```
-
-### History
-
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| POST | `/api/history/save` | Save analysis | Yes |
-| GET | `/api/history` | List all history | Yes |
-| GET | `/api/history/stats` | Dashboard stats | Yes |
-| GET | `/api/history/:id` | Get single record | Yes |
-| DELETE | `/api/history/:id` | Delete record | Yes |
-
-### Health Check
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/health` | API health status |
-
-## Security Features
-
-- JWT token-based authentication
-- bcrypt password hashing (12 salt rounds)
-- Helmet security headers
-- CORS configuration
-- Rate limiting (100 req/15min general, 10 req/min for analysis)
-- Input validation with express-validator
-- Centralized error handling
-- Environment variable configuration
-
-## Future Enhancements
-
-- Real-time collaborative debugging
-- IDE plugin integration (VS Code extension)
-- Code execution sandbox
-- Support for additional languages (Go, Rust, TypeScript)
-- Team workspaces and shared history
-- AI chat follow-up for clarifications
-- CI/CD pipeline integration
-- OAuth social login (Google, GitHub)
-
-## License
-
-This project is developed as a Final Year Project for academic purposes.
